@@ -1,45 +1,141 @@
-// colors
-$bg-color: #fff;
-$logo-color: #000;
+// Colors
+$pixel2XL-color: #f2f2f2;
+$pixel2XL-color-dark: darken($pixel2XL-color, 20%);
+$pixel2XL-color-darker: darken($pixel2XL-color, 30%);
+$pixel2XL-bazzel-color: #121212;
+$pixel2XL-bazzel-color-light: lighten($pixel2XL-bazzel-color, 10%);
+$pixel2XL-power-color: #ec865a;
+$pixel2XL-volume-color: darken(#fff, 15%);
+$pixel2-xl-sensor-color: #333;
+$body-color: #ffffff;
 
-// mixins
-@mixin center {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    margin: auto;
+// sizes
+$body-padding: 5%;
+$pixel2-xl-height: 744px;
+$pixel2-xl-width: 360px;
+$bazzel-height: 740px;
+$bazzel-width: 360px;
+$bazzel-border-radius: 36px;
+$screen-height: 650px;
+$screen-width: 320px;
+$screen-border-radius: 24px;
+$header-height: 720px;
+$header-width: 349px;
+$header-border-radius: 40px;
+
+// image
+$screen-bg: "https://www.nibbleng.com/wp-content/uploads/2017/10/Pixel-2-wallpaper.jpg";
+
+// mixin
+@mixin center{
+  display: flex;
+  justify-content: center;
 }
-
-@mixin pseudo($position: absolute, $content: "") {
+@mixin pseudo($position: absolute, $content: ""){
     content: $content;
     position: $position;
 }
-
-@mixin breakpoint($point) {
-    @if $point==tablet {
-        @media (max-width: 1024px) and (min-width: 768px) {
-            @content ;
-        }
+@mixin reset{
+  *{
+    &,
+    &::before,
+    &::after {
+      box-sizing: border-box;
+      display: block;
     }
-    @else if $point==mobile {
-        @media (max-width: 480px) and (min-width: 320px) {
-            @content ;
-        }
-    }
+  }
+  z-index: 1;
+  position: relative;
+}
+@mixin button($background,$height,$right,$top,$width){
+  background: $background;
+  height: $height;
+  position: absolute;
+  right: $right;
+  top: $top;
+  width: $width;
+}
+@mixin sensor($height,$width,$border-radius,$margin,$left){
+  height: $height;
+  width: $width;
+  background: $pixel2-xl-sensor-color;
+  border-radius: $border-radius;
+  margin: $margin;
+  left: $left;
 }
 
-html, body{
-  width: 100%;
-  height: 100%;
-}
-
+/*------------------------------------------------*/
 body{
-  background: $bg-color;
-  overflow: hidden;
+  @include center;
+  padding: $body-padding;
 }
 
-.logo{
-  @include center;
+.pixel2-xl {
+  @include reset;
+  height: $pixel2-xl-height;
+  width: $pixel2-xl-width;
+
+  .bazzel {
+    height: $bazzel-height;
+    width: $bazzel-width;
+    padding: 51px 20px;
+    background: $pixel2XL-bazzel-color;
+    border-radius: $bazzel-border-radius;
+    box-shadow: inset 0 0 0 2px $pixel2XL-color-dark, inset 0 0 0 6px $pixel2XL-color;
+  }
+
+  .screen {
+    height: $screen-height;
+    width: $screen-width;
+    background: url($screen-bg) no-repeat;
+    background-position: center center;
+    background-size: cover;
+    border-radius: $screen-border-radius;
+    position: relative;
+  }
+
+  .header {
+    height: $header-height;
+    width: $header-width;
+    left: 50%;
+    top: 0;
+    z-index: 199;
+    position: absolute;
+    border-radius: $header-border-radius;
+    margin: 15px 0 0 -175px;
+    background: transparent;
+    box-shadow: 0 -10px 10px -10px $pixel2XL-color-dark;
+    border-bottom: 8px solid $pixel2XL-bazzel-color-light;
+
+    // sensor at top center
+    &::after{
+      @include pseudo;
+      @include sensor(5px,130px,2.5px,-15px 0 0 -65px,50%);
+      top: 20px;
+    }
+
+    // sensor at top bottom
+    &::before {
+      @include pseudo;
+      @include sensor(5px,130px,2.5px,0 0 0 -65px,50%);
+      bottom: 0px;
+    }
+  }
+
+  // left sensor
+  .sensors {
+    &::before {
+      @include pseudo;
+      @include sensor(12px,12px,5px,-20px 0 0 50px,0);
+      top: 32px;
+    }
+  }
+
+  .volume {
+    @include button($pixel2XL-color-dark,94px,-2px,274px,3px);
+  }
+
+  .power {
+    @include button($pixel2XL-power-color,48px,-2px,174px,3px);
+  }
 }
